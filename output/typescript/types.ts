@@ -15215,6 +15215,28 @@ export interface SecurityRealmInfo {
   type: string
 }
 
+export interface SecurityRoleDescriptor {
+  cluster?: string[]
+  indices?: SecurityIndicesPrivileges[]
+  index?: SecurityIndicesPrivileges[]
+  global?: SecurityGlobalPrivilege[] | SecurityGlobalPrivilege
+  applications?: SecurityApplicationPrivileges[]
+  metadata?: Metadata
+  run_as?: string[]
+  transient_metadata?: SecurityTransientMetadataConfig
+}
+
+export interface SecurityRoleDescriptorRead {
+  cluster: string[]
+  indices: SecurityIndicesPrivileges[]
+  index: SecurityIndicesPrivileges[]
+  global?: SecurityGlobalPrivilege[] | SecurityGlobalPrivilege
+  applications?: SecurityApplicationPrivileges[]
+  metadata?: Metadata
+  run_as?: string[]
+  transient_metadata?: SecurityTransientMetadataConfig
+}
+
 export interface SecurityRoleMapping {
   enabled: boolean
   metadata: Metadata
@@ -15387,7 +15409,7 @@ export interface SecurityCreateApiKeyRequest extends RequestBase {
   body?: {
     expiration?: Duration
     name?: Name
-    role_descriptors?: Record<string, SecurityCreateApiKeyRoleDescriptor>
+    role_descriptors?: Record<string, SecurityRoleDescriptor>
     metadata?: Metadata
   }
 }
@@ -15398,17 +15420,6 @@ export interface SecurityCreateApiKeyResponse {
   id: Id
   name: Name
   encoded: string
-}
-
-export interface SecurityCreateApiKeyRoleDescriptor {
-  cluster: string[]
-  indices: SecurityIndicesPrivileges[]
-  index: SecurityIndicesPrivileges[]
-  global?: SecurityGlobalPrivilege[] | SecurityGlobalPrivilege
-  applications?: SecurityApplicationPrivileges[]
-  metadata?: Metadata
-  run_as?: string[]
-  transient_metadata?: SecurityTransientMetadataConfig
 }
 
 export interface SecurityCreateServiceTokenRequest extends RequestBase {
@@ -15597,19 +15608,8 @@ export interface SecurityGetServiceAccountsRequest extends RequestBase {
 
 export type SecurityGetServiceAccountsResponse = Record<string, SecurityGetServiceAccountsRoleDescriptorWrapper>
 
-export interface SecurityGetServiceAccountsRoleDescriptor {
-  cluster: string[]
-  indices: SecurityIndicesPrivileges[]
-  index: SecurityIndicesPrivileges[]
-  global?: SecurityGlobalPrivilege[] | SecurityGlobalPrivilege
-  applications?: SecurityApplicationPrivileges[]
-  metadata?: Metadata
-  run_as?: string[]
-  transient_metadata?: SecurityTransientMetadataConfig
-}
-
 export interface SecurityGetServiceAccountsRoleDescriptorWrapper {
-  role_descriptor: SecurityGetServiceAccountsRoleDescriptor
+  role_descriptor: SecurityRoleDescriptorRead
 }
 
 export interface SecurityGetServiceCredentialsNodesCredentials {
@@ -15994,6 +15994,18 @@ export interface SecuritySuggestUserProfilesResponse {
 export interface SecuritySuggestUserProfilesTotalUserProfiles {
   value: long
   relation: RelationName
+}
+
+export interface SecurityUpdateApiKeyRequest extends RequestBase {
+  id: Id
+  body?: {
+    role_descriptors?: Record<string, SecurityRoleDescriptor>
+    metadata?: Metadata
+  }
+}
+
+export interface SecurityUpdateApiKeyResponse {
+  updated: boolean
 }
 
 export interface SecurityUpdateUserProfileDataRequest extends RequestBase {
